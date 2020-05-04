@@ -52,7 +52,7 @@ ROOT_URLCONF = 'app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [r'C:\Project\dj-homeworks\dynamic-templates\task1\app'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
