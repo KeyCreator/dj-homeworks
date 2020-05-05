@@ -1,3 +1,4 @@
+{% load styles %}
 <!DOCTYPE html>{% load static %}
 <html>
   <head>
@@ -19,7 +20,42 @@
         <div class="col s12 m8">
         
         <!-- Ваша логика -->
-
+          <table>
+            <thead>
+              <td>Год</td>
+              <td>Январь</td>
+              <td>Февраль</td>
+              <td>Март</td>
+              <td>Апрель</td>
+              <td>Май</td>
+              <td>Июнь</td>
+              <td>Июль</td>
+              <td>Август</td>
+              <td>Сентябрь</td>
+              <td>Октябрь</td>
+              <td>Ноябрь</td>
+              <td>Декабрь</td>
+              <td>Годовая</td>
+            </thead>
+            {% for year in years %}
+              <tr>
+                <td>{{ year.Год }}</td>
+                <td bgcolor="{{ year.Янв | bgcolor }}">{{ year.Янв }}</td>
+                <td bgcolor="{{ year.Фев | bgcolor }}">{{ year.Фев }}</td>
+                <td bgcolor="{{ year.Мар | bgcolor }}">{{ year.Мар }}</td>
+                <td bgcolor="{{ year.Апр | bgcolor }}">{{ year.Апр }}</td>
+                <td bgcolor="{{ year.Май | bgcolor }}">{{ year.Май }}</td>
+                <td bgcolor="{{ year.Июн | bgcolor }}">{{ year.Июн }}</td>
+                <td bgcolor="{{ year.Июл | bgcolor }}">{{ year.Июл }}</td>
+                <td bgcolor="{{ year.Авг | bgcolor }}">{{ year.Авг }}</td>
+                <td bgcolor="{{ year.Сен | bgcolor }}">{{ year.Сен }}</td>
+                <td bgcolor="{{ year.Окт | bgcolor }}">{{ year.Окт }}</td>
+                <td bgcolor="{{ year.Ноя | bgcolor }}">{{ year.Ноя }}</td>
+                <td bgcolor="{{ year.Дек | bgcolor }}">{{ year.Дек }}</td>
+                <td bgcolor="#C0C0C0">{{ year.Суммарная }}</td>
+              </tr>
+            {% endfor %}
+          </table>
         </div>
       </div>
     {% endblock %}

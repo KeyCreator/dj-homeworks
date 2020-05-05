@@ -9,5 +9,5 @@ urlpatterns = [
     path('', index, name='index'),
     path('files/', file_list, name='file_list'),    # задайте необязательный параметр "date"
                                       # для детальной информации смотрите HTML-шаблоны в директории templates
-    path('content/', file_content, name='file_content'),
+    path('content/<name>/', file_content, name='file_content'),
 ]
