@@ -78,9 +78,8 @@ def format_selftext(value, count=0):
     print(f'Длина текста {len(matches)}')
 
     if len(matches) > count * 3:
-        pattern = re.compile('\A(\W*\w+\W+){5}')
-        value = pattern.match(value)
-        print(value)
-        value = value.group(0) + '...'
+        pattern1 = re.compile(r'\A(\W*\w+\W+){'+str(count)+'}')
+        pattern2 = re.compile(r'(\W+\w*\W*){'+str(count)+'}\Z')
+        value = f'{pattern1.search(value).group(0)} ... {pattern2.search(value).group(0)}'
 
     return value
