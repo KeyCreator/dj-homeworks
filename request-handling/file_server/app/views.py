@@ -9,17 +9,15 @@ def index(request):
     return redirect(reverse(file_list))
 
 
-def file_list(request):
+def file_list(request, date=None):
     template_name = 'index.html'
     
     # Реализуйте алгоритм подготавливающий контекстные данные для шаблона по примеру:
-    dt_format = lambda time: datetime.date.fromtimestamp(time)
+    dt_format = lambda time: datetime.datetime.fromtimestamp(time)
 
-    dt = request.GET.get('date')
-    print(f'Параметр date={dt}')
-    if dt:
-        dt = datetime.datetime.strptime(dt, '%Y-%m-%d').date()
-        print(f'Параметр date после конвертации={dt} type {type(dt)}')
+    if date:
+        # date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        print(f'Параметр date после конвертации={date}, type {type(date)}')
 
     path = settings.FILES_PATH
     files = os.listdir(path=path)
@@ -33,7 +31,7 @@ def file_list(request):
     pprint(files)
     context = {
         'files': files,
-        'date':  dt  # Этот параметр необязательный
+        'date':  date  # Этот параметр необязательный
     }
 
     return render(request, template_name, context)
