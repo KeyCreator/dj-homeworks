@@ -15,20 +15,18 @@ def file_list(request, date=None):
     # Реализуйте алгоритм подготавливающий контекстные данные для шаблона по примеру:
     dt_format = lambda time: datetime.datetime.fromtimestamp(time)
 
-    if date:
-        # date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
-        print(f'Параметр date после конвертации={date}, type {type(date)}')
-
     path = settings.FILES_PATH
     files = os.listdir(path=path)
     files = map(lambda name: {'name': name,
                               'ctime': dt_format(os.stat(os.path.join(path, name)).st_ctime),
-                              'mtime': dt_format(os.stat(os.path.join(path, name)).st_mtime),
-                              'date_type': type(dt_format(os.stat(os.path.join(path, name)).st_ctime))},
-
+                              'mtime': dt_format(os.stat(os.path.join(path, name)).st_mtime)},
                 files)
+
+    if date:
+        files = filter(lambda foo: date == foo['ctime'].date(), files)
+
     files = list(files)
-    pprint(files)
+
     context = {
         'files': files,
         'date':  date  # Этот параметр необязательный
