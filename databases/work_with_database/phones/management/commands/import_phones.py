@@ -18,3 +18,9 @@ class Command(BaseCommand):
             for line in phone_reader:
                 # TODO: Добавьте сохранение модели
                 pass
+
+# from django.template.defaultfilters import slugify
+#
+# for obj in Blog.objects.filter(slug=""):
+#     obj.slug = slugify(obj.title)
+#     obj.save()
