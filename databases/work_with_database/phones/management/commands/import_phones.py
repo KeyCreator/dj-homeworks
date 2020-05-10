@@ -1,6 +1,8 @@
 import csv
+import os
 
 from django.core.management.base import BaseCommand
+from django.template.defaultfilters import slugify
 from phones.models import Phone
 
 
@@ -9,18 +11,21 @@ class Command(BaseCommand):
         pass
 
     def handle(self, *args, **options):
-        with open('phones.csv', 'r') as csvfile:
+        path = os.path.join('..', 'phones.csv')
+        with open(path, 'r') as csvfile:
 
-            phone_reader = csv.reader(csvfile, delimiter=';')
-            # пропускаем заголовок
-            next(phone_reader)
+            phone_reader = csv.DictReader(csvfile, delimiter=';')
 
             for line in phone_reader:
                 # TODO: Добавьте сохранение модели
-                pass
-
-# from django.template.defaultfilters import slugify
-#
-# for obj in Blog.objects.filter(slug=""):
-#     obj.slug = slugify(obj.title)
-#     obj.save()
+                phone = Phone()
+                phone.id = line['id']
+                phone.name = line['name']
+                phone.image = line['image']
+                phone.price = line['price']
+                phone.release_date = line['release_date']
+                print(f'PRICE IS {phone.release_date}')
+                print(f'LTE IS {line["lte_exists"]}, {type(line["lte_exists"])}')
+                phone.lte_exists = line['lte_exists']
+                phone.slug = slugify(phone.name)
+                phone.save()

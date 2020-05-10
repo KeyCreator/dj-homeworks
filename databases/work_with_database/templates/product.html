@@ -5,10 +5,16 @@
 {% block content %}
     <div class="container">
         <div class="header">
-            <h1>Телефон</h1>
+            <h1>{{ phone.name }}</h1>
         </div>
         <div class="content">
-
+            <img src="{{ phone.image }}" alt="{{ phone.slug }}">
+            <table>
+                <tr><td>Модель</td><td>{{ phone.name }}</td></tr>
+                <tr><td>Цена, руб.</td><td>{{ phone.price }}</td></tr>
+                <tr><td>Дата выхода</td><td>{{ phone.release_date }}</td></tr>
+                <tr><td>Поддержка LTE</td><td>{{ phone.lte_exists }}</td></tr>
+            </table>
         </div>
     </div>
 {% endblock %}
