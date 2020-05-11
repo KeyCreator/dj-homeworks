@@ -12,6 +12,13 @@ def books_view(request, pub_date=None):
     books = Book.objects.all()
     if pub_date:
         print(f'pub_date={pub_date}, {type(pub_date)}')
+
+        ' Делаем собственный пагинатор '
+        pub_dates = map(lambda book: book.pub_date, books)   # Получаем перечень дат выхода книг
+        pub_dates = set(pub_dates)  # отсекаем все дублирующиеся записи
+        pub_dates = sorted(pub_dates)   # сортируем даты выхода книг в хроногологическом порядке
+        prev_page, next_page = None, None
+
         books = filter(lambda book: book.pub_date == pub_date, books)
 
     books = list(books)
