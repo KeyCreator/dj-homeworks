@@ -1,11 +1,49 @@
 {% extends "base.html" %}
 {% load static %}
+{% load displays %}
 
 {% block title %}Каталог{% endblock %}
 {% block content %}
     <div class="container">
         <div class="header">
             <h1>Сравнение телефонов</h1>
+        </div>
+        <div class="content">
+            <table>
+                <thead>
+                  <td>Модель</td>
+                  {% for phone in phones %}<td>{{ phone.name }}</td>{% endfor %}
+                </thead>
+                <tr>
+                    <td>Стоимость</td>
+                    {% for phone in phones %}<td>{{ phone.price|float_to_currency }}</td>{% endfor %}
+                </tr>
+                <tr>
+                    <td>Операционная система</td>
+                    {% for phone in phones %}<td>{{ phone.operating_system }}</td>{% endfor %}
+                <tr>
+                    <td>Разрешение экрана</td>
+                    {% for phone in phones %}<td>{{ phone.screen_resolution }}</td>{% endfor %}
+                </tr>
+                <tr>
+                    <td>Разрешение камеры</td>
+                    {% for phone in phones %}<td>{{ phone.camera_resolution|add_unit:'Мп' }}</td>{% endfor %}
+                </tr>
+                <tr>
+                    <td>Оперативная память</td>
+                    {% for phone in phones %}<td>{{ phone.ram_amount }}</td>{% endfor %}
+                </tr>
+                <tr>
+                    <td>Дополнительно</td>
+                    {% for phone in phones %}
+                        <td>
+                        {% for feature in phone.phonefeature.all %}
+                            {{ feature.name }}<br>
+                        {% endfor %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            </table>
         </div>
     </div>
 {% endblock %}
