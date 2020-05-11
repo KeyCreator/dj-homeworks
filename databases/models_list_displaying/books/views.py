@@ -28,6 +28,7 @@ def books_view(request, pub_date=None):
                 prev_page = item
                 context.setdefault('prev_page', f'{reverse(books_view)}/{prev_page}/')
                 break
+
         print(f'prev_date={prev_page}, {type(prev_page)}')
         print(f'next_date={next_page}, {type(next_page)}')
 
