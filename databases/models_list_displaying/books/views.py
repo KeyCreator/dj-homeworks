@@ -23,7 +23,7 @@ def books_view(request, pub_date=None):
                 next_page = item
                 context.setdefault('next_page', f'{reverse(books_view)}/{next_page}/')
                 break
-        for item in sorted(pub_dates):
+        for item in sorted(pub_dates, reverse=True):
             if pub_date > item:
                 prev_page = item
                 context.setdefault('prev_page', f'{reverse(books_view)}/{prev_page}/')
