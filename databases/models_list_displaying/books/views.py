@@ -10,20 +10,32 @@ def index(request):
 def books_view(request, pub_date=None):
     template = 'books/books_list.html'
     books = Book.objects.all()
+    context = {}
     if pub_date:
         print(f'pub_date={pub_date}, {type(pub_date)}')
 
         ' Делаем собственный пагинатор '
         pub_dates = map(lambda book: book.pub_date, books)   # Получаем перечень дат выхода книг
         pub_dates = set(pub_dates)  # отсекаем все дублирующиеся записи
-        pub_dates = sorted(pub_dates)   # сортируем даты выхода книг в хроногологическом порядке
         prev_page, next_page = None, None
+        for item in sorted(pub_dates):
+            if pub_date < item:
+                next_page = item
+                context.setdefault('next_page', f'{reverse(books_view)}/{next_page}/')
+                break
+        for item in sorted(pub_dates):
+            if pub_date > item:
+                prev_page = item
+                context.setdefault('prev_page', f'{reverse(books_view)}/{prev_page}/')
+                break
+        print(f'prev_date={prev_page}, {type(prev_page)}')
+        print(f'next_date={next_page}, {type(next_page)}')
 
         books = filter(lambda book: book.pub_date == pub_date, books)
 
     books = list(books)
     print(books, type(books))
-    context = {'books': books}
+    context.setdefault('books', books)
     return render(request, template, context)
 
 
