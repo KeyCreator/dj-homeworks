@@ -14,3 +14,26 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=128,
+                            verbose_name='Тэг')
+    members = models.ManyToManyField(Article,
+                                     through='Relationship',
+                                     through_fields=('tag', 'article'))
+
+    class Meta:
+        verbose_name = 'Тэг'
+        verbose_name_plural = 'Тэги'
+
+    def __str__(self):
+        return self.name
+
+
+class Relationship(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.DO_NOTHING, related_name='scopes')
+    tag = models.ForeignKey(Tag, on_delete=models.DO_NOTHING)
+    is_main = models.BooleanField(verbose_name='Основной',
+                                  blank=False,
+                                  default=False)

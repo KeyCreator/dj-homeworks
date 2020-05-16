@@ -6,10 +6,11 @@ from .models import Article
 
 def articles_list(request):
     template_name = 'articles/news.html'
-    context = {}
+    ordering = '-published_at'
+    context = {'object_list': Article.objects.select_related('author').defer('title', 'text', 'image').order_by(ordering)}
 
     # используйте этот параметр для упорядочивания результатов
     # https://docs.djangoproject.com/en/2.2/ref/models/querysets/#django.db.models.query.QuerySet.order_by
-    ordering = '-published_at'
+
 
     return render(request, template_name, context)

@@ -99,7 +99,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'RU-ru'
+LANGUAGE_CODE = 'ru'
+
+LANGUAGES = (("ru", "Russian"), ("en", "English"))
 
 TIME_ZONE = 'Europe/Moscow'
 
@@ -124,7 +126,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 try:
-    from .settings_local import *
+    from articles.settings_local import *
 except ImportError:
-    pass
+    print('Ошибка импорта файла локальных настроек')
 
