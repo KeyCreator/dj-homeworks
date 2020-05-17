@@ -36,4 +36,4 @@ class Relationship(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.DO_NOTHING)
     is_main = models.BooleanField(verbose_name='Основной',
                                   blank=False,
-                                  default=False)
+                                  null=False)
