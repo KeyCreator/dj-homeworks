@@ -7,6 +7,7 @@ from django.core.cache import cache
 
 from .models import City
 from .forms import SearchTicket
+from .utils import get_cities
 
 
 def ticket_page_view(request):
@@ -21,5 +22,12 @@ def ticket_page_view(request):
 
 def cities_lookup(request):
     """Ajax request предлагающий города для автоподстановки, возвращает JSON"""
-    results = []
-    return JsonResponse(results, safe=False)
+    pattern = request.GET.get('term')
+    if pattern:
+        pattern = pattern.lower().capitalize()
+
+    cities = get_cities()
+    cities = map(lambda city: (city.id, city.name), cities)
+    cities = filter(lambda city: city[1].startswith(pattern), cities)
+    print('Выборка для виджета', list(cities))
+    return JsonResponse(list(cities), safe=False)
