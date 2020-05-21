@@ -20,26 +20,28 @@ def product_view(request, pk):
     template = 'app/product_detail.html'
     product = get_object_or_404(Product, id=pk)
     context = {}
-    has_comment = request.session.get('reviewed_products', [])
-    context['is_review_exist'] = has_comment
+
+    has_comment = request.session.get('reviewed_products', set())
+    context['is_review_exist'] = product.id in has_comment
+    print("request.session['reviewed_products']=", has_comment, type(has_comment))
 
     if request.method == 'POST':
         # логика для добавления отзыва
         form = ReviewForm(request.POST)
-        if form.is_valid():
+        if not product.id in has_comment:
             post = form.save(commit=False)
             post.product_id = product.id
             post.save()
-            has_comment.append(product.id)
+            has_comment.add(product.id)
             request.session['reviewed_products'] = has_comment
-
+            print("Отладочная строка")
             return redirect("main_page")
+
+        print("VIEWS.PY: Вы уже оставили один отзыв")
         context['form'] = form
     else:
         context['form'] = ReviewForm
 
     context['product'] = product
-
-    print("request.session['reviewed_products']=", request.session['reviewed_products'])
 
     return render(request, template, context)

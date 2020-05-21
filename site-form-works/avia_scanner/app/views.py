@@ -29,5 +29,7 @@ def cities_lookup(request):
     cities = get_cities()
     cities = map(lambda city: (city.id, city.name), cities)
     cities = filter(lambda city: city[1].startswith(pattern), cities)
+    # cities = cities.filter(name__startswith=pattern)
+
     print('Выборка для виджета', list(cities))
     return JsonResponse(list(cities), safe=False)
