@@ -21,7 +21,7 @@ def product_view(request, pk):
     product = get_object_or_404(Product, id=pk)
     context = {}
 
-    has_comment = request.session.get('reviewed_products', set())
+    has_comment = request.session.get('reviewed_products', [])
     context['is_review_exist'] = product.id in has_comment
     print("request.session['reviewed_products']=", has_comment, type(has_comment))
 
@@ -32,7 +32,7 @@ def product_view(request, pk):
             post = form.save(commit=False)
             post.product_id = product.id
             post.save()
-            has_comment.add(product.id)
+            has_comment.append(product.id)
             request.session['reviewed_products'] = has_comment
             print("Отладочная строка")
             return redirect("main_page")
