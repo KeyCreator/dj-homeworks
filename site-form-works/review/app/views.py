@@ -28,7 +28,8 @@ def product_view(request, pk):
     if request.method == 'POST':
         # логика для добавления отзыва
         form = ReviewForm(request.POST)
-        if not product.id in has_comment:
+        if form.is_valid() and \
+                product.id not in has_comment:
             post = form.save(commit=False)
             post.product_id = product.id
             post.save()

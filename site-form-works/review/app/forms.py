@@ -9,10 +9,7 @@ class ReviewForm(forms.ModelForm):
         model = Review
         exclude = ('id', 'product')
 
-    # def clean(self):
-    #     cleaned_data = self.cleaned_data
+    def clean(self):
+        cleaned_data = self.cleaned_data
 
-        # if Review.objects.filter(product=1).count() > 0:
-        #     raise forms.ValidationError("Вы уже оставили один отзыв")
-
-        # return cleaned_data
+        return cleaned_data
