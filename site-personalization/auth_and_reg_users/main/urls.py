@@ -20,7 +20,9 @@ from django.urls import path
 import auth.views
 
 urlpatterns = [
-    path('', auth.views.home),
+    path('', auth.views.HomeView.as_view(), name='home'),
     path('admin/', admin.site.urls),
-    path('signup/', auth.views.signup),
+    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
+    path('signup/', auth.views.SignupFormView.as_view(), name='signup'),
 ]

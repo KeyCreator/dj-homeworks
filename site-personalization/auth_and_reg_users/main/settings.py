@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'auth.apps.AuthConfig', # новое
 ]
 
 MIDDLEWARE = [
@@ -43,6 +44,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTH_USER_MODEL = 'my_auth.CustomUser' # новое
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases

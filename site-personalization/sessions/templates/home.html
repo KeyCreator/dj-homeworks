@@ -7,6 +7,28 @@
     <div class="container">
         <div class="header">
             <h1>Игра "Угадай число"</h1>
+            {% if is_author %}
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit" value="Загадать"/>
+                    <br>
+                    Вы загадали число {{ riddle }}
+                    <br>
+                    {% for item in statistic %}
+                        {{ item }}
+                        <br>
+                    {% endfor %}
+                </form>
+            {% else %}
+                <form method="GET">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit" value="Угадать"/>
+                    <br>
+                    {{ message }}
+                </form>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
