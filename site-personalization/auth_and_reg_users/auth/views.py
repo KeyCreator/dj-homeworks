@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .forms import SignupForm
+from .models import CustomUser
 # from django.http import HttpResponseRedirect
 # from django.views.generic.base import View
 # from django.contrib.auth import login, logout
-
-from .models import CustomUser
 
 
 class HomeView(TemplateView):
@@ -21,7 +21,7 @@ class HomeView(TemplateView):
 
 class SignupFormView(FormView):
     template_name = 'signup.html'
-    form_class = UserCreationForm
+    form_class = SignupForm # #UserCreationForm
     success_url = '/login/'
 
     def post(self, request, *args, **kwargs):
@@ -29,8 +29,8 @@ class SignupFormView(FormView):
 
         if form.is_valid():
             form_data = form.cleaned_data
-            user = CustomUser.objects.create_user(username=form_data['username'],
-                                                  password=form_data['password'])
+            print(form_data)
+            user = CustomUser.objects.create_user(username=form_data['username'], password=form_data['password1'])
             user.save()
 
         return redirect('/')
