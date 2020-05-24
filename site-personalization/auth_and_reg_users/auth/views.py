@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .forms import SignupForm
 from .models import CustomUser
 # from django.http import HttpResponseRedirect
@@ -31,6 +30,7 @@ class SignupFormView(FormView):
             form_data = form.cleaned_data
             print(form_data)
             user = CustomUser.objects.create_user(username=form_data['username'], password=form_data['password1'])
+            user.is_staff = True
             user.save()
 
         return redirect('/')
