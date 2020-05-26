@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import View
 
@@ -16,25 +16,35 @@ class GameView(View):
         player = create_player(request)
         context = {}
         context['form'] = form
-        is_author = not game_found()
-        context['is_author'] = is_author
+
+        new_game = request.GET.get('new')
+        if new_game:
+            finish_game(player, Game.objects.get(is_over=False))
+            return redirect('/')
 
         if form.is_valid():
-            if not is_author:
+            form_data = form.cleaned_data
+            context['is_game'] = game_found()
+
+            if context['is_game']:
                 game = Game.objects.get(is_over=False)
-                join_game(player=player, game=game)
-                form_data = form.cleaned_data
-                if form_data.get('riddle'):
-                    increase_attempts(player=player, game=game)
-                    if form_data['riddle'] < game.riddle:
-                        context['message'] = 'Ваше число меньше'
-                    elif form_data['riddle'] > game.riddle:
-                        context['message'] = 'Ваше число больше'
-                    elif form_data['riddle'] == game.riddle:
-                        context['message'] = 'Вы угадали заданное число'
-                        stop_game(game)
-            else:
-                context['statistic'] = get_statistic(Game.objects.get(is_over=False))
+                join_game(player, game)
+                context['is_author'] = player_is_author(player, game)
+                if context['is_author']:
+                    context['statistic'] = get_statistic(Game.objects.get(is_over=False))
+                    context['is_true_answer'] = \
+                        True if PlayerGameInfo.objects.filter(game=game, is_true_answer=True).count() else False
+                else:
+                    join_game(player=player, game=game)
+                    if form_data.get('riddle'):
+                        increase_attempts(player=player, game=game)
+                        if form_data['riddle'] < game.riddle:
+                            context['message'] = 'Ваше число меньше'
+                        elif form_data['riddle'] > game.riddle:
+                            context['message'] = 'Ваше число больше'
+                        else:
+                            context['message'] = 'Вы угадали заданное число'
+                            stop_game(player, game)
 
         return render(request, self.template_name, context)
 
@@ -47,6 +57,7 @@ class GameView(View):
             create_game(request, data['riddle'])
             context['form'] = form
             context['is_author'] = True
+            context['is_game'] = True
             context['riddle'] = data['riddle']
             context['statistic'] = get_statistic(Game.objects.get(is_over=False))
             return render(request, self.template_name, context)
@@ -90,7 +101,7 @@ def create_player(request):
         player = Player()
         if not request.session.session_key:
             request.session.save()
-        player.name = request.session.session_key[:5]
+        player.name = player.id # request.session.session_key[:5]
         player.save()
         request.session['player_id'] = player.id
     else:
@@ -108,8 +119,9 @@ def increase_attempts(player, game):
 def get_statistic(game):
     info = PlayerGameInfo.objects.filter(game=game, is_author=False)
     statistic = list()
+    statistic.append(f'Вы загадали число {game.riddle}')
 
-    if game.is_over:
+    if PlayerGameInfo.objects.filter(game=game, is_true_answer=True).count():
         statistic.append('Ваше число угадали')
     else:
         statistic.append('Игра продолжается')
@@ -120,6 +132,16 @@ def get_statistic(game):
     return statistic
 
 
-def stop_game(game):
+def stop_game(player, game):
+    info = PlayerGameInfo.objects.get(player=player, game=game)
+    info.is_true_answer = True
+    info.save()
+
+
+def finish_game(player, game):
+    stop_game(player, game)
     game.is_over = True
     game.save()
+
+def player_is_author(player, game):
+    return PlayerGameInfo.objects.get(player=player, game=game).is_author

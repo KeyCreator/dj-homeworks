@@ -27,7 +27,7 @@ class Game(models.Model):
         verbose_name_plural = 'Игры'
 
     def __str__(self):
-        return str(self.riddle)
+        return f'Загадано число {self.riddle}, игра {"закончена" if self.is_over else "продолжается"}'
 
 
 class PlayerGameInfo(models.Model):
@@ -39,3 +39,10 @@ class PlayerGameInfo(models.Model):
     attempts = models.IntegerField(verbose_name='Количество попыток отгадывающего игрока',
                                    default=0,
                                    null=False)
+    is_true_answer = models.BooleanField(verbose_name='Угадал?',
+                                         default=False,
+                                         null=False)
+
+    class Meta:
+        verbose_name = 'Информация об игре'
+        verbose_name_plural = 'Информация об играх'
