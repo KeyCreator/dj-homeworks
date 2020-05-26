@@ -101,7 +101,7 @@ def create_player(request):
         player = Player()
         if not request.session.session_key:
             request.session.save()
-        player.name = player.id # request.session.session_key[:5]
+        player.name = player.id
         player.save()
         request.session['player_id'] = player.id
     else:
