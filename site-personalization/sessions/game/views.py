@@ -51,6 +51,10 @@ class GameView(View):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         context = {}
+
+        if Game.objects.filter(is_over=False).count():
+            return redirect('/')
+
         if form.is_valid():
             # <process form cleaned data>
             data = form.cleaned_data
@@ -69,17 +73,13 @@ def create_game(request, riddle):
     player = create_player(request)
 
     game_id = request.session.get('game_id')
-    if not game_id or Game.objects.get(id=game_id).is_over:
+    if not game_id or not Game.objects.filter(id=game_id, is_over=False).count():
         game = Game()
         game.riddle = riddle
         game.save()
         request.session['game_id'] = game.id
 
         join_game(player, game, is_author=True)
-    else:
-        game = Game.objects.get(id=game_id)
-        game.riddle = riddle
-        game.save()
 
 
 def game_found():
