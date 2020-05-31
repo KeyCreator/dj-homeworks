@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.urls import path
-from .views import table_view
+from table.views import table_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
