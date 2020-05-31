@@ -22,7 +22,7 @@
           myMap.geoObjects
             .add(new ymaps.Placemark([{{ item.latitude }}, {{ item.longitude }}], {
               balloonContent: '{{ item.route_numbers }}',
-              iconCaption: '{{ item.name }}'
+              iconCaption: {'{ item.name }}'
             }, {
               preset: 'islands#blueCircleDotIconWithCaption',
               iconCaptionMaxWidth: '100'

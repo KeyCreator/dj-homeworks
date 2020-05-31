@@ -1,12 +1,13 @@
 from django.shortcuts import render
 
 from .models import Station, Route
+from .utils import get_routes, get_stations
 
 def route_view(request):
     template = 'stations.html'
 
     context = {
-        'routes': Route.objects.all().only('name').order_by('name')
+        'routes': get_routes()
     }
 
     return render(request, template, context)
@@ -14,18 +15,15 @@ def route_view(request):
 def station_view(request):
     template = 'stations.html'
 
-    route = request.GET.get('route')
-    route = route[1:]
-    stations = list(map(lambda item: {'latitude': item.latitude,
-                                      'longitude': item.longitude,
-                                      'route_numbers': item.routes,
-                                      'name': item.name},
-                        Station.objects.filter(routes__name=route).prefetch_related('routes')))
+    route_name = request.GET.get('route')
+    route_name = route_name[1:]
+    route = Route.objects.get(name=route_name)
 
     context = {
-        'stations': stations,
-        'routes': Route.objects.all().only('name').order_by('name')
+        'stations': get_stations(route),
+        'routes': get_routes()
     }
 
-    print(stations)
+    print(context['stations'])
+
     return render(request, template, context)

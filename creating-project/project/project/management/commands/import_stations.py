@@ -23,8 +23,10 @@ class Command(BaseCommand):
             Station.objects.all().delete()
             Route.objects.all().delete()
 
-            for line in station_reader:
-                # TODO: Добавьте сохранение модели
+            for i, line in enumerate(station_reader):
+                if i == 100:
+                    break
+
                 station = Station()
                 station.id = line['ID']
                 station.name = line['Name']
