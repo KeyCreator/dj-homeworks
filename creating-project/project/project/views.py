@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from .models import Station, Route
-from .utils import get_routes, get_stations
+from .utils import get_routes, get_stations, get_center
 
 def route_view(request):
     template = 'stations.html'
@@ -16,14 +16,19 @@ def station_view(request):
     template = 'stations.html'
 
     route_name = request.GET.get('route')
-    route_name = route_name[1:]
+    print(route_name, len(route_name))
     route = Route.objects.get(name=route_name)
 
+    stations = get_stations(route)
+    x, y = get_center(stations)
+    center = {'x': x, 'y': y}
+
     context = {
-        'stations': get_stations(route),
-        'routes': get_routes()
+        'stations': stations,
+        'routes': get_routes(),
+        'center': center
     }
 
-    print(context['stations'])
+    print(context['stations'], context['center'])
 
     return render(request, template, context)

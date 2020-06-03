@@ -1,8 +1,10 @@
 import csv
 import os
+
 from django.core.management.base import BaseCommand
 
 from project.models import Station, Route
+from project.utils import get_routes_set
 
 
 # https://django.fun/tutorials/sozdanie-polzovatelskih-komand-upravleniya-v-django/
@@ -14,31 +16,27 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         print('Текущая папка', os.getcwd())
+        print('Данные загружаются ...')
         path = kwargs['path']
         with open(path, 'r') as csvfile:
 
             station_reader = csv.DictReader(csvfile, delimiter=';')
+            station_reader = list(station_reader)
 
-            print('Данные загружаются ...')
             Station.objects.all().delete()
             Route.objects.all().delete()
 
-            for i, line in enumerate(station_reader):
-                if i == 100:
-                    break
+            routes = get_routes_set(station_reader)
+            Route.objects.bulk_create([Route(name=item) for item in routes])
 
-                station = Station()
-                station.id = line['ID']
-                station.name = line['Name']
-                station.longitude = line["Longitude_WGS84"]
-                station.latitude = line["Latitude_WGS84"]
-                station.save()
+            stations = [Station(name=item['Name'],
+                                longitude=item['Longitude_WGS84'],
+                                latitude=item['Latitude_WGS84'])
+                        for item in station_reader]
+            Station.objects.bulk_create(stations)
 
-                for name in line["RouteNumbers"].split(';'):
-                    if Route.objects.filter(name=name).count():
-                        route = Route.objects.get(name=name)
-                    else:
-                        route = Route.objects.create(name=name)
-                    station.routes.add(route)
+            for station, line in zip(Station.objects.all(), station_reader):
+                routes = Route.objects.filter(name__in=line["RouteNumbers"].split(';'))
+                station.routes.set(routes)
 
         print('Данные успешно загружены')
