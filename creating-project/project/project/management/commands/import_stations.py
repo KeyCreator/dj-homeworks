@@ -3,7 +3,7 @@ import os
 
 from django.core.management.base import BaseCommand
 
-from project.models import Station, Route
+from project.models import Station, Route, StationRoute
 from project.utils import get_routes_set
 
 
@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         print('Текущая папка', os.getcwd())
-        print('Данные загружаются ...')
+        print('Данные загружаются')
         path = kwargs['path']
         with open(path, 'r') as csvfile:
 
@@ -29,14 +29,22 @@ class Command(BaseCommand):
             routes = get_routes_set(station_reader)
             Route.objects.bulk_create([Route(name=item) for item in routes])
 
-            stations = [Station(name=item['Name'],
+            stations = [Station(uid=item['ID'],
+                                name=item['Name'],
                                 longitude=item['Longitude_WGS84'],
                                 latitude=item['Latitude_WGS84'])
                         for item in station_reader]
             Station.objects.bulk_create(stations)
 
-            for station, line in zip(Station.objects.all(), station_reader):
-                routes = Route.objects.filter(name__in=line["RouteNumbers"].split(';'))
-                station.routes.set(routes)
+            station_route = list()
+            for i, item in enumerate(station_reader):
+                foo = [StationRoute(station=Station.objects.get(uid=item['ID']),
+                                    route=bar)
+                       for bar in Route.objects.filter(name__in=item["RouteNumbers"].split(';'))]
+                station_route.append(foo)
+                if not i % 100:
+                    print('.', end='', flush=True)
+            StationRoute.objects.bulk_create(station_route)
 
-        print('Данные успешно загружены')
+
+        print('\nДанные успешно загружены')
