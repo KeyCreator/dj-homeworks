@@ -16,9 +16,7 @@ def station_view(request):
     template = 'stations.html'
 
     route_name = request.GET.get('route')
-    print(route_name, len(route_name))
     route = Route.objects.get(name=route_name)
-
     stations = get_stations(route)
     x, y = get_center(stations)
     center = {'x': x, 'y': y}

@@ -1,14 +1,14 @@
 from functools import reduce
 
-from .models import Station, Route
+from .models import Station, StationRoute, Route
 
 
 def get_routes(station=None):
     if not station:
-        routes = Route.objects.all().only('name').order_by('name')
+        routes = Route.objects.all().order_by('name').values_list('name')
     else:
-        routes = station.routes.all()
-    routes = map(lambda route: route.name if route.name[0] != ' ' else route.name[1:], routes)
+        routes = station.routes.all().order_by('name').values_list('name')
+    routes = map(lambda item: item[0].strip(), routes)
     return list(routes)
 
 
@@ -31,7 +31,7 @@ def get_center(stations):
 def get_routes_set(station_reader):
     get_list = lambda s: reduce(lambda d, el: d.extend(el) or d, s, [])
 
-    routes = map(lambda item: item["RouteNumbers"].split(';'), station_reader)
+    routes = map(lambda item: item["RouteNumbers"].replace(' ', '').split(';'), station_reader)
     routes = get_list(routes)
     routes = set(routes)
 
